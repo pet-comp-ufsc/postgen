@@ -17,8 +17,8 @@
    width="276.55051mm"
    sodipodi:docname="logo-pet-vec.svg"
    inkscape:export-filename="/home/jptiz/dev/pet/postgen/logo-pet-notvec.png"
-   inkscape:export-xdpi="56.029999"
-   inkscape:export-ydpi="56.029999"
+   inkscape:export-xdpi="73.780952"
+   inkscape:export-ydpi="73.780952"
    inkscape:version="0.92.4 5da689c313, 2019-01-14">
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -38,8 +38,8 @@
      fit-margin-right="0.0001"
      fit-margin-bottom="0.0001"
      inkscape:zoom="0.68118962"
-     inkscape:cx="290.01916"
-     inkscape:cy="344.97327"
+     inkscape:cx="290.3287"
+     inkscape:cy="462.04998"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -143,7 +143,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

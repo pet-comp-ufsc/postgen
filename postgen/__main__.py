@@ -7,13 +7,13 @@ from postgen import Post, Size, make_image, Theme
 
 if __name__ == '__main__':
     post = Post(
-        title='Oficinas de Verão',
+        title='Tutoriais do PET CCO',
         description=dedent('''
-            Está em Florianópolis em fevereiro e gostaria de aproveitar as
-            férias para aprender ShellScript ou LaTeX?
+            Precisando aprender uma linguagem ou ferramenta, seja para a
+            graduação, trabalho ou diversão?
 
-            Participe de nossas oficinas de verão! Informações e calendário na
-            descrição.
+            O PET Computação UFSC oferece um repositório de tutoriais!
+            Acesse: pet.inf.ufsc.br/tutoriais.
         '''),
         logo=Path('logo-pet-notvec.png')
     )

@@ -2,7 +2,7 @@ from pathlib import Path
 from sys import argv
 from textwrap import dedent
 
-from postgen import Post, Size, make_image
+from postgen import Post, Size, make_image, Theme
 
 
 if __name__ == '__main__':
@@ -18,9 +18,18 @@ if __name__ == '__main__':
         logo=Path('logo-pet-notvec.png')
     )
 
-    img = make_image(post, size=Size(1080, 1080), bgcolor=(105, 176, 229, 255))
+    theme = Theme(
+        fgcolor=(95, 166, 219, 255),
+        bgcolor=(255, 255, 255, 255)
+    )
+
+    img = make_image(post, size=Size(1080, 1080), theme=theme)
 
     if '--display' in argv:
         img.show()
     else:
-        img.save('output.png')
+        output_index = argv.index('--output')
+        if output_index > 0:
+            img.save(argv[output_index + 1])
+        else:
+            img.save('output.png')

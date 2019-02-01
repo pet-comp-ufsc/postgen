@@ -4,10 +4,10 @@ from enum import Enum
 from io import BytesIO
 from pathlib import Path
 from textwrap import wrap
-from typing import Tuple, NamedTuple
+from typing import Tuple, NamedTuple, Union
 
 from cairosvg import svg2png
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImagePath
 
 from .post import Post
 
@@ -48,6 +48,14 @@ class Size(NamedTuple):
     height: int
 
 
+Color = Union[Tuple[int, int, int, int], int, str]
+
+
+class Theme(NamedTuple):
+    fgcolor: Color = (255, 255, 255, 255)
+    bgcolor: Color = (95, 166, 219, 255)
+
+
 def apply_relatives(pos: Pos, size: Size, obj_size: Size):
     '''Checks whether an object's position has any RelativePos and applies it
     within canvas and the object size.'''
@@ -68,9 +76,10 @@ def apply_relatives(pos: Pos, size: Size, obj_size: Size):
 @dataclass
 class Drawer:
     size: Size
+    theme: Theme
 
     def __post_init__(self):
-        self.img = Image.new('RGBA', self.size, (255, 255, 255, 0))
+        self.img = Image.new('RGBA', self.size, self.theme.bgcolor)
         self.draw = ImageDraw.Draw(self.img)
 
     def draw_image(self, path: Path, pos: Pos, resize_to: Size = None):
@@ -125,7 +134,16 @@ class Drawer:
 
         pos = apply_relatives(pos, self.size, obj_size=text_size)
 
-        self.draw.text(pos, text, font=font, align=align.value)
+        self.draw.text(
+            pos,
+            text,
+            fill=self.theme.fgcolor,
+            font=font,
+            align=align.value
+        )
+
+    def draw_path(self, path: ImagePath, fill=None, outline=None):
+        self.draw.polygon(path, fill=fill, outline=outline)
 
 
 def fit(text: str, columns: int):
@@ -137,10 +155,17 @@ def fit(text: str, columns: int):
     )
 
 
-def make_image(post: Post, size: Size, bgcolor=(95, 166, 219, 255)):
-    drawer = Drawer(size)
+def make_image(post: Post, size: Size, theme: Theme = Theme()):
+    drawer = Drawer(size, theme=theme)
 
-    drawer.draw_rect(Pos(0, 0), size, fill=bgcolor)
+    drawer.draw_path(
+        path=ImagePath.Path([
+            (0, 0),
+            (0, 120),
+            (120, 0),
+        ]),
+        fill=(125, 196, 249, 255),
+    )
 
     drawer.draw_text(
         post.title,

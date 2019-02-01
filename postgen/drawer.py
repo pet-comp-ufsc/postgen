@@ -1,5 +1,6 @@
 '''Post drawer module.'''
 from dataclasses import dataclass
+from enum import Enum
 from io import BytesIO
 from pathlib import Path
 from textwrap import wrap
@@ -25,6 +26,12 @@ class RelativePos:
         offset: int = 0
 
 
+class Align(Enum):
+    LEFT = 'left'
+    CENTER = 'center'
+    RIGHT = 'right'
+
+
 @dataclass
 class Font:
     family: str
@@ -42,6 +49,8 @@ class Size(NamedTuple):
 
 
 def apply_relatives(pos: Pos, size: Size, obj_size: Size):
+    '''Checks whether an object's position has any RelativePos and applies it
+    within canvas and the object size.'''
     x, y = pos
     if isinstance(x, RelativePos.Center):
         x = x.offset + (size.width - obj_size.width) / 2
@@ -80,7 +89,7 @@ class Drawer:
                 rw = img.width * rh // img.height
             elif rh == 0:
                 rh = img.height * rw // img.width
-            img = img.resize((rw, rh))
+            img = img.resize((rw, rh), resample=Image.LANCZOS)
 
         self.img.alpha_composite(
             img,
@@ -93,7 +102,13 @@ class Drawer:
     def draw_rect(self, origin: Pos, size: Size, fill: Tuple[int, int, int]):
         self.draw.rectangle((origin, size), fill=fill)
 
-    def draw_text(self, text: str, pos: Pos, font: Font = None):
+    def draw_text(
+            self,
+            text: str,
+            pos: Pos,
+            font: Font = None,
+            align: Align = Align.CENTER,
+            ):
         if font:
             try:
                 font = ImageFont.truetype(font.family, size=font.size)
@@ -110,11 +125,16 @@ class Drawer:
 
         pos = apply_relatives(pos, self.size, obj_size=text_size)
 
-        self.draw.text(pos, text, font=font)
+        self.draw.text(pos, text, font=font, align=align.value)
 
 
 def fit(text: str, columns: int):
-    return '\n'.join(wrap(text, width=32))
+    '''Fits multiline text into one string with max number of columns per
+    line.'''
+    return '\n\n'.join(
+        '\n'.join(wrap(paragraph, width=32))
+        for paragraph in text.split('\n\n')
+    )
 
 
 def make_image(post: Post, size: Size, bgcolor=(95, 166, 219, 255)):
@@ -125,13 +145,13 @@ def make_image(post: Post, size: Size, bgcolor=(95, 166, 219, 255)):
     drawer.draw_text(
         post.title,
         Pos(RelativePos.Center(), 120),
-        font=Font(family='DejaVuSansMono', size=72),
+        font=Font(family='DejaVuSans', size=72),
     )
 
     drawer.draw_text(
-        fit(post.description, 32),
-        Pos(RelativePos.Center(), 240),
-        font=Font(family='DejaVuSansMono', size=48),
+        fit(post.description, 28),
+        Pos(RelativePos.Center(), 360),
+        font=Font(family='DejaVuSans', size=48),
     )
 
     drawer.draw_image(

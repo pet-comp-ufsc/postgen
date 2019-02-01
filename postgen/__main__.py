@@ -1,3 +1,4 @@
+from pathlib import Path
 from sys import argv
 from textwrap import dedent
 
@@ -6,16 +7,20 @@ from postgen import Post, Size, make_image
 
 if __name__ == '__main__':
     post = Post(
-        title='Hello, world!',
+        title='Oficinas de Verão',
         description=dedent('''
-            Here we are to present you the best lorem ispum for your
-            facebook posts. Be awesome and yay yay yay :*.
+            Está em Florianópolis em fevereiro e gostaria de aproveitar as
+            férias para aprender ShellScript ou LaTeX?
+
+            Participe de nossas oficinas de verão! Informações e calendário na
+            descrição.
         '''),
+        logo=Path('logo-pet-notvec.png')
     )
 
-    img = make_image(post, size=Size(1080, 1080))
+    img = make_image(post, size=Size(1080, 1080), bgcolor=(105, 176, 229, 255))
 
     if '--display' in argv:
         img.show()
     else:
-        img.save('rosca.png')
+        img.save('output.png')

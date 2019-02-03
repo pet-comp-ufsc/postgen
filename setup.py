@@ -14,5 +14,7 @@ setup(
     install_requires=[
         'pillow>=5.1',
         'cairosvg>=0.9.0',
+        'carl>=0.0.7',
+        'toml>=0.10',
     ],
 )

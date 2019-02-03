@@ -1,35 +1,31 @@
 from pathlib import Path
-from sys import argv
-from textwrap import dedent
+
+from carl import command, Arg
+import toml
 
 from postgen import Post, Size, make_image, Theme
 
 
-if __name__ == '__main__':
-    post = Post(
-        title='Tutoriais do PET CCO',
-        description=dedent('''
-            Precisando aprender uma linguagem ou ferramenta, seja para a
-            graduação, trabalho ou diversão?
-
-            O PET Computação UFSC oferece um repositório de tutoriais!
-            Acesse: pet.inf.ufsc.br/tutoriais.
-        '''),
-        logo=Path('logo-pet-notvec.png')
-    )
-
-    theme = Theme(
-        fgcolor=(95, 166, 219, 255),
-        bgcolor=(255, 255, 255, 255)
-    )
+@command
+def run(
+        post: Path,
+        theme: Path = None,
+        display: Arg(action='store_true') = False,
+        output: Path = None,
+):
+    post = Post.from_path(post)
+    theme = Theme.from_path(theme)
 
     img = make_image(post, size=Size(1080, 1080), theme=theme)
 
-    if '--display' in argv:
+    if display:
         img.show()
+
+        if output is not None:
+            img.save(output)
     else:
-        output_index = argv.index('--output')
-        if output_index > 0:
-            img.save(argv[output_index + 1])
-        else:
-            img.save('output.png')
+        img.save(output if output else 'output.png')
+
+
+if __name__ == '__main__':
+    run.run()

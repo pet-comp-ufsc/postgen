@@ -8,11 +8,16 @@ from typing import Tuple, NamedTuple, Union
 
 from cairosvg import svg2png
 from PIL import Image, ImageDraw, ImageFont, ImagePath
+import toml
 
 from .post import Post
 
 
 class FontNotFound(Exception):
+    pass
+
+
+class ThemeNotFound(Exception):
     pass
 
 
@@ -54,6 +59,34 @@ Color = Union[Tuple[int, int, int, int], int, str]
 class Theme(NamedTuple):
     fgcolor: Color = (255, 255, 255, 255)
     bgcolor: Color = (95, 166, 219, 255)
+
+    @staticmethod
+    def from_path(path: Path) -> 'Theme':
+        def from_path(path: Path):
+            theme = toml.load(path)
+
+            colors = theme['colors']
+
+            for prop, color in colors.items():
+                if isinstance(color, list):
+                    colors[prop] = tuple(color)
+
+            return Theme(
+                fgcolor=colors['fgcolor'],
+                bgcolor=colors['bgcolor'],
+            )
+
+        if path is None:
+            return Theme()
+
+        if path.exists():
+            return from_path(path)
+
+        if not path.is_absolute():
+            pkgdir = Path(f'{__file__}').parent.parent
+            return from_path(pkgdir / 'themes' / path.with_suffix('.toml'))
+
+        raise ThemeNotFound(path)
 
 
 def apply_relatives(pos: Pos, size: Size, obj_size: Size):

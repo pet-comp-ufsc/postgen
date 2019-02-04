@@ -1,0 +1,12 @@
+[about]
+title = 'Tutoriais do PET CCO'
+description = '''
+    Precisando aprender uma linguagem ou ferramenta, seja para a graduação,
+    trabalho ou diversão?
+
+    O PET Computação UFSC oferece um repositório de tutoriais online! Acesse:
+    pet.inf.ufsc.br/tutoriais
+'''
+
+[images]
+logo = 'logo-pet-notvec.png'

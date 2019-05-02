@@ -1,3 +1,6 @@
 [colors]
 fgcolor = [95, 166, 219, 255]
 bgcolor = [255, 255, 255, 255]
+
+[description]
+line-height = 24
